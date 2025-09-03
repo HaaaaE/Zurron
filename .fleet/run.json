@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "gradle",
+            "name": "gradle hotRunJvm",
+            "tasks": [
+                "hotRunJvm"
+            ],
+            "args": [
+                "--auto"
+            ]
+        },
+    ]
+}
