@@ -27,7 +27,7 @@ data class CollectedItem(val url: String)
 var inputUrl by mutableStateOf("")
 var CollectedItems = mutableStateListOf<CollectedItem>()
 
-fun onBtnClicked() {
+fun onAddButtonClicked() {
     if (inputUrl.isNotBlank()) {
         CollectedItems.add(CollectedItem(inputUrl.trim()))
         inputUrl = ""
@@ -84,7 +84,7 @@ fun App() {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Button(
-                            onClick = ::onBtnClicked,
+                            onClick = ::onAddButtonClicked,
                             modifier = Modifier
                                 .height(40.dp)
                                 .weight(1f),
