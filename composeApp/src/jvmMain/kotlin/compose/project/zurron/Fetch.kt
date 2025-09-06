@@ -2,19 +2,20 @@ package compose.project.zurron
 
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import io.ktor.http.HttpHeaders
-import kotlinx.coroutines.runBlocking
 
 enum class NoteType {
     Normal, Video
 }
+
 @Serializable
 data class NoteData(
     val url: String,
@@ -63,6 +64,7 @@ data class InteractInfo(
     val commentCount: String,
     val collectedCount: String
 )
+
 /**
  * 纯 KMP：不显式指定 Engine，由各平台 sourceSet 提供。
  * - androidMain: 添加 ktor-client-okhttp
@@ -87,7 +89,8 @@ class XhsFetcher(
             )
             header(
                 HttpHeaders.Accept,
-                        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+            )
         }
         expectSuccess = true
     }
@@ -95,15 +98,16 @@ class XhsFetcher(
     private fun printJsonString(jsonString: String) {
         println(Json { prettyPrint = true }.encodeToString(Json.parseToJsonElement(jsonString)))
     }
+
     suspend fun extract(link: String): NoteData {
         val html: String = client.get(link).body()
         val regex = """window\.__INITIAL_STATE__=(.*?)</script>""".toRegex()
 
         // 2. Find the first match in the HTML string
         val matchResult = regex.find(html)
-        
+
         var result: NoteData? = null;
-        
+
         // 3. Extract the captured JSON string
         if (matchResult != null && matchResult.groupValues.size > 1) {
             val jsonString = matchResult.groupValues[1]
@@ -113,15 +117,15 @@ class XhsFetcher(
             // using a library like kotlinx.serialization
 
             val json = Json { ignoreUnknownKeys = true } // Important: To avoid errors from fields you don't define
-            
+
             try {
                 val initialState = json.decodeFromString<InitialState>(jsonString)
                 val noteId = initialState.note.currentNoteId
                 val noteDetails = initialState.note.noteDetailMap[noteId] ?: throw Exception("Note details not found.")
-                
-                result =  NoteData(
+
+                result = NoteData(
                     url = link,
-                    type = if(noteDetails.note.type == "video") NoteType.Video else NoteType.Normal,
+                    type = if (noteDetails.note.type == "video") NoteType.Video else NoteType.Normal,
                     title = noteDetails.note.title,
                     desc = noteDetails.note.desc,
                 )
@@ -133,7 +137,7 @@ class XhsFetcher(
         }
 
         val metas = parseMeta(html)
-        
+
         if (result == null) {
             // 优化：提取标题并移除网站后缀，更干净
             val title = (metas["og:title"] ?: metas["twitter:title"])
@@ -149,7 +153,7 @@ class XhsFetcher(
                 desc = desc ?: "",
             )
         }
-        if (result.type == NoteType.Video){
+        if (result.type == NoteType.Video) {
             result = result.copy(video = metas["og:video"] ?: metas["twitter:video"])
         }
         // 修正：使用专用方法提取所有图片，避免被 Map 覆盖
@@ -193,12 +197,13 @@ class XhsFetcher(
     }
 }
 
-fun main() = runBlocking{
+fun main() = runBlocking {
     val fetcher = XhsFetcher()
     val data =
         fetcher.extract("https://www.xiaohongshu.com/explore/68abee19000000001b033166?note_flow_source=wechat&xsec_token=CBSBHSW5rUoZbeBpvmvoZy1eVYnGJOEtaUeiEgOc5Ezk8=")
     // 这里拿到的是公开元数据与简易正文
-    val ddtt = fetcher.extract("https://www.xiaohongshu.com/explore/627e29bf000000000102ff57?note_flow_source=wechat&xsec_token=CBuK-T8DUTVg8qBlgro0uc5vpgwEX7yVdGpvgNuIBeG-o=")
+    val ddtt =
+        fetcher.extract("https://www.xiaohongshu.com/explore/627e29bf000000000102ff57?note_flow_source=wechat&xsec_token=CBuK-T8DUTVg8qBlgro0uc5vpgwEX7yVdGpvgNuIBeG-o=")
     ddtt.pp()
     data.pp()
 }
