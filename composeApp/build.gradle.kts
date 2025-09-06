@@ -100,7 +100,6 @@ android {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-okhttp-jvm:3.2.2")
     debugImplementation(compose.uiTooling)
 }
 

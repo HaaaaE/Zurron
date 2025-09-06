@@ -1,29 +1,29 @@
 package compose.project.zurron
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class CollectedItem(val url: String)
+
 var inputUrl by mutableStateOf("")
 var CollectedItems = mutableStateListOf<CollectedItem>()
 
@@ -77,7 +77,7 @@ fun App() {
                         singleLine = true,
                         textStyle = TextStyle(fontSize = 14.sp)
                     )
-                    
+
                     // 按钮行
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -93,14 +93,14 @@ fun App() {
                             contentPadding = PaddingValues(horizontal = 8.dp)
                         ) {
                             Icon(
-                                Icons.Default.Add, 
+                                Icons.Default.Add,
                                 contentDescription = "添加",
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("添加", fontSize = 13.sp)
                         }
-                        
+
                         OutlinedButton(
                             onClick = { CollectedItems.clear() },
                             modifier = Modifier
@@ -114,7 +114,7 @@ fun App() {
                             contentPadding = PaddingValues(horizontal = 8.dp)
                         ) {
                             Icon(
-                                Icons.Default.Clear, 
+                                Icons.Default.Clear,
                                 contentDescription = "清除",
                                 modifier = Modifier.size(16.dp)
                             )
@@ -124,7 +124,7 @@ fun App() {
                     }
                 }
             }
-            
+
             // 简洁的统计信息
             if (CollectedItems.isNotEmpty()) {
                 Text(
@@ -134,7 +134,7 @@ fun App() {
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
                 )
             }
-            
+
             // 列表区域
             SimpleLazyColumn()
         }
@@ -144,7 +144,7 @@ fun App() {
 @Composable
 fun SimpleLazyColumn() {
     val uriHandler = LocalUriHandler.current
-    
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp),
@@ -179,9 +179,9 @@ fun SimpleLazyColumn() {
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(18.dp)
                     )
-                    
+
                     Spacer(modifier = Modifier.width(10.dp))
-                    
+
                     // URL 文本
                     Text(
                         text = item.url,
@@ -191,7 +191,7 @@ fun SimpleLazyColumn() {
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
-                    
+
                     // 访问提示
                     Text(
                         text = "→",
@@ -202,7 +202,7 @@ fun SimpleLazyColumn() {
                 }
             }
         }
-        
+
         // 优化的空状态
         if (CollectedItems.isEmpty()) {
             item {
@@ -218,16 +218,16 @@ fun SimpleLazyColumn() {
                         modifier = Modifier.size(40.dp),
                         tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     Text(
                         text = "还没有收集任何 URL",
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
                     )
-                    
+
                     Text(
                         text = "在上方输入框中输入 URL 并点击添加按钮开始收集",
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),

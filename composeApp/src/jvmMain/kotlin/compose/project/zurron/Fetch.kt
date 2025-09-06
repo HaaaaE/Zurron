@@ -95,8 +95,11 @@ class XhsFetcher(
         expectSuccess = true
     }
 ) {
+    private val jsonFormatter = Json { prettyPrint = true }
+
+    @Suppress("unused")
     private fun printJsonString(jsonString: String) {
-        println(Json { prettyPrint = true }.encodeToString(Json.parseToJsonElement(jsonString)))
+        println(jsonFormatter.encodeToString(Json.parseToJsonElement(jsonString)))
     }
 
     suspend fun extract(link: String): NoteData {
@@ -106,7 +109,7 @@ class XhsFetcher(
         // 2. Find the first match in the HTML string
         val matchResult = regex.find(html)
 
-        var result: NoteData? = null;
+        var result: NoteData? = null
 
         // 3. Extract the captured JSON string
         if (matchResult != null && matchResult.groupValues.size > 1) {
