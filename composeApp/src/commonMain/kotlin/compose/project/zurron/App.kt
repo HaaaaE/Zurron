@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,34 +45,17 @@ fun App() {
                 .safeContentPadding()
                 .fillMaxSize()
         ) {
-            // 紧凑的标题区域
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "🔗 URL 收集器",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
-                )
-            }
-            
             // 更紧凑的输入区域
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(Color.Transparent)
             ) {
                 Column(
                     modifier = Modifier.padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     // URL 输入框
                     OutlinedTextField(
@@ -88,8 +72,7 @@ fun App() {
                             )
                         },
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
+                            .fillMaxWidth(),
                         shape = RoundedCornerShape(6.dp),
                         singleLine = true,
                         textStyle = TextStyle(fontSize = 14.sp)
@@ -173,11 +156,11 @@ fun SimpleLazyColumn() {
                     .fillMaxWidth()
                     .clickable {
                         val url = if (
-                            item.url.startsWith("https://") || item.url.startsWith("https://")
+                            item.url.startsWith("http://") || item.url.startsWith("https://")
                         ) item.url else "https://${item.url}"
                         uriHandler.openUri(url)
                     },
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                //elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 shape = RoundedCornerShape(6.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
